@@ -89,7 +89,7 @@ pub trait Policy {
     fn update_memory(&mut self,event:&MemoryEvent);
 
     fn choose_next_partner(&mut self,mine:&Inventory,merchants:&[MerchantId],current:MerchantId)->Action;
-    fn choose_next_city(&mut self,mine:&Inventory,graph:&[Vec<CityId>],current:CityId)->CityId;
+    fn choose_next_city(&mut self,mine:&Inventory,graph:&[Vec<(CityId,Tick)>],current:CityId)->CityId;
 }
 
 pub struct Merchant{
@@ -192,7 +192,7 @@ pub fn maybe_move_merchant(m:&mut Merchant,merchants:&[MerchantId],current:Merch
      m.policy.choose_next_partner(&m.items,merchants,current)
 }
 
-pub fn maybe_move_cities(m:&mut Merchant,graph:&[Vec<CityId>],city:CityId)->Option<CityId>{
+pub fn maybe_move_cities(m:&mut Merchant,graph:&[Vec<(CityId,Tick)>],city:CityId)->Option<CityId>{
     let next = m.policy.choose_next_city(&m.items,graph,city);
     if next != city {
         Some(next)
@@ -204,7 +204,7 @@ pub fn maybe_move_cities(m:&mut Merchant,graph:&[Vec<CityId>],city:CityId)->Opti
 pub struct Game {
     pub merchants:Vec<Merchant>,
     pub cities: Vec<Vec<MerchantId>>,
-    pub graph:Vec<Vec<CityId>>,
+    pub graph:Vec<Vec<(CityId,Tick)>>,
 }
 
 fn main() {
